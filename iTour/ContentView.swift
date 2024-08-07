@@ -19,39 +19,65 @@ struct ContentView: View {
     
     //note: all swiftdata models automatically conform to identifiable protocol, we can directly use them in the lists
     
+    //var array to keep destination obj while creating a new one
+    @State private var path = [Destination]()
+    
+    
     var body: some View {
-        NavigationStack {
+        //path - when value of "path" variable is changed, navigationstack moves to vw stated in navigationDestination by passing obj in "path" variable for use
+        //note: make sure path array has only 1 element in it
+        NavigationStack(path: $path) {
             List {
                 ForEach(destinations) { destination in
-                    //for each row in this list
-                    VStack(alignment: .leading) {
-                        //name of the destination
-                        Text(destination.name)
-                            .font(.headline)
-                        
-                        //date
-                        //formatted - to format this date value as necessary
-                        Text(destination.date.formatted(date: .long, time: .shortened))
+                    //NavigationLink - helps with navigating to edit destination vw, it also helps with passing destination obj data
+                    NavigationLink(value: destination) {
+                        //for each row in this list
+                        VStack(alignment: .leading) {
+                            //name of the destination
+                            Text(destination.name)
+                                .font(.headline)
+                            
+                            //date
+                            //formatted - to format this date value as necessary
+                            Text(destination.date.formatted(date: .long, time: .shortened))
+                        }
                     }
                 }
+                //to delete selected destination obj when swiped left
+                .onDelete(perform: deleteDestinations)
             }
             .navigationTitle("iTour") //for navigation title
+            //to set destination vw when tapped on one of the rows in abv created list
+            .navigationDestination(for: Destination.self, destination: EditDestinationView.init)
             .toolbar {
                 Button("Add Samples", action: addSamples)
+                //button to create a new destination
+                Button("Add Destination", systemImage: "plus", action: addDestination)
             }
         }
     }
     
-    func addSamples() {
-        //creating sample Destination objs
-        let rome = Destination(name: "Rome")
-        let florence = Destination(name: "Florence")
-        let naples = Destination(name: "Naples")
+    
+    //to create a blank destination obj
+    func addDestination() {
+        //creating a blank destination obj
+        let destination = Destination()
         
-        //adding these objs to swiftdata storage
-        modelContext.insert(rome)
-        modelContext.insert(florence)
-        modelContext.insert(naples)
+        //adding that obj to model context
+        modelContext.insert(destination)
+        
+        //forming a path array with this obj
+        path = [destination]
+    }
+    
+    //fn to delete destinations
+    func deleteDestinations(_ indexSet: IndexSet) {
+        for index in indexSet {
+            //getting destination obj to be deleted
+            let destination = destinations[index]
+            //deleting selected destination from modelcontext
+            modelContext.delete(destination)
+        }
     }
 }
 
