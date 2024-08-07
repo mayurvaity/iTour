@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct iTourApp: App {
@@ -13,5 +14,6 @@ struct iTourApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: Destination.self) //it tells swiftdata to create Destination obj in swiftdata (if not already created) and load it for app to access it 
     }
 }
