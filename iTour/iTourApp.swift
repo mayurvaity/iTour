@@ -14,6 +14,8 @@ struct iTourApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: Destination.self) //it tells swiftdata to create Destination obj in swiftdata (if not already created) and load it for app to access it 
+        .modelContainer(for: Destination.self) ///it tells swiftdata to create Destination obj in swiftdata (if not already created) and load it for app to access it
+        ///it also creates a model context called "main", which runs on MainActor so it can be read from any UI element (vws) 
+        
     }
 }
