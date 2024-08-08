@@ -15,7 +15,10 @@ struct ContentView: View {
     
     //this macro will read out all Destination data from swiftdata in the below array obj
     //it also watches for changes made in below vws, and updates them in the swiftdata
-    @Query var destinations: [Destination]
+    //sort - to sort by one of the properties of Destination obj, this way we can sort only on 1 column at a time,
+//    @Query(sort: \Destination.priority, order: .reverse) var destinations: [Destination]
+    //for sorting on multiple columns use sortdescriptors (check below example)
+    @Query(sort: [SortDescriptor(\Destination.priority, order: .reverse), SortDescriptor(\Destination.name, order: .forward)]) var destinations: [Destination]
     
     //note: all swiftdata models automatically conform to identifiable protocol, we can directly use them in the lists
     
@@ -50,7 +53,6 @@ struct ContentView: View {
             //to set destination vw when tapped on one of the rows in abv created list
             .navigationDestination(for: Destination.self, destination: EditDestinationView.init)
             .toolbar {
-                Button("Add Samples", action: addSamples)
                 //button to create a new destination
                 Button("Add Destination", systemImage: "plus", action: addDestination)
             }
