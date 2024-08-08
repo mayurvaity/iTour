@@ -15,6 +15,8 @@ class Destination {
     var details: String
     var date: Date
     var priority: Int
+    //@Relationship(deleteRule: .cascade) - to delete all its sight objs when the corresponding Destination obj is deleted 
+    @Relationship(deleteRule: .cascade) var sights = [Sight]() //an empty array of sights
     
 //    priority values could be 1, 2 or 3
 //    1 - high

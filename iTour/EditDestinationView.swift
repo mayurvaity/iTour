@@ -13,6 +13,9 @@ struct EditDestinationView: View {
     //var to keep destination obj
     @Bindable var destination: Destination
     
+    //var to accept newSightName data from UI
+    @State private var newSightName = ""
+    
     var body: some View {
         Form {
             TextField("Name", text: $destination.name)
@@ -31,9 +34,40 @@ struct EditDestinationView: View {
                 }
                 .pickerStyle(.segmented) //to show side by side 3
             }
+            
+            //sights section
+            Section("Sights") {
+                //to display list of sights related to this destination
+                ForEach(destination.sights) { sight in
+                    Text(sight.name)
+                }
+                
+                //to accept new sight data 
+                HStack {
+                    //accepting new sight name here
+                    TextField("Add a new sight in \(destination.name)", text: $newSightName)
+                    
+                    //button to perform action of adding new sight to this destination, sight name taken from abv textfield
+                    Button("Add", action: addSight)
+                }
+            }
         }
         .navigationTitle("Edit Destination")
         .navigationBarTitleDisplayMode(.inline) //will help when we come to this vw using navigationLink from content vw 
+    }
+    
+    func addSight() {
+        //checking if supplied sight name is empty
+        guard newSightName.isEmpty == false else { return }
+        
+        withAnimation {
+            //creating new sight obj using name provided
+            let sight = Sight(name: newSightName)
+            //adding abv obj to sights list for that destination
+            destination.sights.append(sight)
+            //then clearing newSightName var for next input
+            newSightName = ""
+        }
     }
 }
 
