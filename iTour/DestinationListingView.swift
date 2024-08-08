@@ -43,9 +43,36 @@ struct DestinationListingView: View {
     }
     
     //to get sortdescriptor from contentvw and sort query data using it
-    init(sort: SortDescriptor<Destination>) {
-        _destinations = Query(sort: [sort])
+    //searchString - to implement searching based on received searchString
+    init(sort: SortDescriptor<Destination>, searchString: String) {
+        _destinations = Query(filter: #Predicate {
+            //if search string is empty then to showw all the objs
+            if searchString.isEmpty {
+                return true
+            } else {
+                //else search using searchstring in name of the destinaton
+                return $0.name.localizedStandardContains(searchString)
+            }
+        }, sort: [sort])
     }
+    
+    
+    //example 2 filtering with date
+//    init(sort: SortDescriptor<Destination>) {
+//        let now = Date.now
+//        
+//        _destinations = Query(filter: #Predicate {
+//            $0.date > now
+//        }, sort: [sort])
+//    }
+    
+    //example 1 filtering with priority >= 2
+//    init(sort: SortDescriptor<Destination>) {
+//        _destinations = Query(filter: #Predicate {
+//            $0.priority >= 2
+//        }, sort: [sort])
+//    }
+    
     
     //fn to delete destinations
     func deleteDestinations(_ indexSet: IndexSet) {
@@ -59,5 +86,5 @@ struct DestinationListingView: View {
 }
 
 #Preview {
-    DestinationListingView(sort: SortDescriptor(\Destination.name))
+    DestinationListingView(sort: SortDescriptor(\Destination.name), searchString: "")
 }
